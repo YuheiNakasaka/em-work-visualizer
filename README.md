@@ -1,73 +1,64 @@
-# React + TypeScript + Vite
+# EM Work Visualizer
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+EMとしての業務を2Dバブルチャートで可視化するWebアプリ。
 
-Currently, two official plugins are available:
+業務を選択すると、**時間軸（短期 ↔ 長期）× スコープ（個人 ↔ 組織）** の2次元平面にバブルとしてマッピングされ、重要度がバブルサイズで表現される。状態はURLエンコードで共有可能。バックエンド不要。
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## 機能
 
-## React Compiler
+- 130件のEM業務を4カテゴリ（プロジェクト / プロダクト / ピープル / テクノロジー）に分類
+- 4分割モード（カテゴリ別チャート）と統合モード（全カテゴリ1チャート）の切替
+- タスクごとの重要度（1〜5）調整でバブルサイズが変化
+- lz-string圧縮によるURL共有（選択状態・重要度・表示モードを保持）
+- サイドバーのドラッグリサイズ・折りたたみ
+- 各タスクの具体例表示
+- レスポンシブ対応
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Tech Stack
 
-## Expanding the ESLint configuration
+- React 19 + TypeScript + Vite
+- Tailwind CSS v4
+- Chart.js + react-chartjs-2 + chartjs-plugin-datalabels
+- lz-string（URL圧縮）
+- Vitest（テスト）
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## セットアップ
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+pnpm install
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## 開発
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+```bash
+pnpm dev
+```
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+http://localhost:5173/ で開発サーバーが起動する。
+
+## テスト
+
+```bash
+pnpm test
+```
+
+## ビルド
+
+```bash
+pnpm build
+```
+
+`dist/` にプロダクションビルドが出力される。
+
+## プロジェクト構成
+
+```
+src/
+├── data/          # タスク定義・カテゴリ・象限の静的データ
+├── types/         # TypeScript型定義
+├── lib/           # ビットフィールド・URLコーデック・座標計算
+├── hooks/         # URL状態管理・チャートデータ変換
+└── components/    # UIコンポーネント
+    ├── TaskSelector/   # タスク選択パネル
+    └── ChartPanel/     # バブルチャート描画
 ```
