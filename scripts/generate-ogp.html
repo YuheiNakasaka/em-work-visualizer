@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    width: 1200px;
+    height: 630px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    overflow: hidden;
+  }
+  .container {
+    text-align: center;
+    color: white;
+  }
+  .title {
+    font-size: 64px;
+    font-weight: 800;
+    letter-spacing: -1px;
+    margin-bottom: 24px;
+  }
+  .subtitle {
+    font-size: 28px;
+    color: #94a3b8;
+    margin-bottom: 48px;
+  }
+  .bubbles {
+    display: flex;
+    gap: 24px;
+    justify-content: center;
+    align-items: flex-end;
+  }
+  .bubble {
+    border-radius: 50%;
+    opacity: 0.7;
+  }
+  .b1 { width: 80px; height: 80px; background: #3B82F6; }
+  .b2 { width: 56px; height: 56px; background: #10B981; }
+  .b3 { width: 96px; height: 96px; background: #F59E0B; }
+  .b4 { width: 64px; height: 64px; background: #8B5CF6; }
+  .b5 { width: 40px; height: 40px; background: #3B82F6; }
+  .b6 { width: 72px; height: 72px; background: #10B981; }
+  .b7 { width: 48px; height: 48px; background: #F59E0B; }
+  .legend {
+    display: flex;
+    gap: 32px;
+    justify-content: center;
+    margin-top: 40px;
+    font-size: 18px;
+    color: #64748b;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .legend-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+  }
+</style>
+</head>
+<body>
+  <div class="container">
+    <div class="title">EM Work Visualizer</div>
+    <div class="subtitle">EMの業務を2Dバブルチャートで可視化</div>
+    <div class="bubbles">
+      <div class="bubble b5"></div>
+      <div class="bubble b1"></div>
+      <div class="bubble b7"></div>
+      <div class="bubble b3"></div>
+      <div class="bubble b2"></div>
+      <div class="bubble b4"></div>
+      <div class="bubble b6"></div>
+    </div>
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot" style="background:#3B82F6"></div>Project</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#10B981"></div>Product</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#F59E0B"></div>People</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#8B5CF6"></div>Technology</div>
+    </div>
+  </div>
+</body>
+</html>
