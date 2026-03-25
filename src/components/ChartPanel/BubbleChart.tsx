@@ -22,18 +22,27 @@ interface Props {
 export function BubbleChart({ datasets, title }: Props) {
   const chartRef = useRef<ChartJS<"bubble"> | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const [, setResizeKey] = useState(0);
+  const parentRef = useRef<HTMLDivElement>(null);
+  const [chartSize, setChartSize] = useState(0);
 
-  // Force chart resize when container dimensions change
+  // Compute the largest square that fits in the parent container
   const handleResize = useCallback(() => {
+    const el = parentRef.current;
+    if (!el) return;
+    const { width, height } = el.getBoundingClientRect();
+    const size = Math.floor(Math.min(width, height));
+    setChartSize(size);
+  }, []);
+
+  // Resize chart canvas when chartSize changes
+  useEffect(() => {
     if (chartRef.current) {
       chartRef.current.resize();
     }
-    setResizeKey((k) => k + 1);
-  }, []);
+  }, [chartSize]);
 
   useEffect(() => {
-    const el = containerRef.current;
+    const el = parentRef.current;
     if (!el) return;
     const observer = new ResizeObserver(() => {
       handleResize();
@@ -56,8 +65,7 @@ export function BubbleChart({ datasets, title }: Props) {
 
   const options: ChartOptions<"bubble"> = {
     responsive: true,
-    maintainAspectRatio: true,
-    aspectRatio: 1,
+    maintainAspectRatio: false,
     resizeDelay: 0,
     layout: {
       padding: { top: 2, right: 2, bottom: 2, left: 2 },
@@ -132,27 +140,35 @@ export function BubbleChart({ datasets, title }: Props) {
   };
 
   return (
-    <div className="relative bg-white rounded-lg border border-gray-200 p-2">
+    <div className="relative bg-white rounded-lg border border-gray-200 p-2 h-full flex flex-col">
       {title && (
-        <div className="text-center text-xs font-medium text-gray-500 mb-1">
+        <div className="text-center text-xs font-medium text-gray-500 mb-1 shrink-0">
           {title}
         </div>
       )}
-      <div className="relative" ref={containerRef}>
-        <Bubble ref={chartRef} data={data} options={options} />
-        {/* Axis end labels */}
-        <span className="absolute bottom-0 left-1 text-[10px] text-gray-400 font-medium">
-          短期
-        </span>
-        <span className="absolute bottom-0 right-1 text-[10px] text-gray-400 font-medium">
-          長期
-        </span>
-        <span className="absolute top-0 left-1 text-[10px] text-gray-400 font-medium">
-          組織
-        </span>
-        <span className="absolute bottom-4 left-1 text-[10px] text-gray-400 font-medium">
-          個人
-        </span>
+      <div ref={parentRef} className="flex-1 min-h-0 flex items-center justify-center">
+        {chartSize > 0 && (
+          <div
+            ref={containerRef}
+            className="relative"
+            style={{ width: chartSize, height: chartSize }}
+          >
+            <Bubble ref={chartRef} data={data} options={options} />
+            {/* Axis end labels */}
+            <span className="absolute bottom-0 left-1 text-[10px] text-gray-400 font-medium">
+              短期
+            </span>
+            <span className="absolute bottom-0 right-1 text-[10px] text-gray-400 font-medium">
+              長期
+            </span>
+            <span className="absolute top-0 left-1 text-[10px] text-gray-400 font-medium">
+              組織
+            </span>
+            <span className="absolute bottom-4 left-1 text-[10px] text-gray-400 font-medium">
+              個人
+            </span>
+          </div>
+        )}
       </div>
     </div>
   );

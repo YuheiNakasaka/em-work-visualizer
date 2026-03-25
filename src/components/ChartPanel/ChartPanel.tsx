@@ -34,7 +34,7 @@ export function ChartPanel({
   }
 
   return (
-    <div className="grid grid-cols-2 gap-2 h-full">
+    <div className="grid grid-cols-2 grid-rows-2 gap-2 h-full">
       {SPLIT_ORDER.map(({ key, label }) => (
         <BubbleChart
           key={key}

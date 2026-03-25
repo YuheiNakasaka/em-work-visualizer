@@ -91,7 +91,7 @@ export function Layout({ header, sidebar, main }: Props) {
         </button>
 
         {/* Main: chart area */}
-        <main className="flex-1 p-4 overflow-auto min-w-0">{main}</main>
+        <main className="flex-1 p-4 overflow-hidden min-w-0">{main}</main>
       </div>
     </div>
   );
