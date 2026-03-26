@@ -68,5 +68,16 @@ export function useUrlState() {
     setState((prev) => ({ ...prev, viewMode }));
   }, []);
 
-  return { state, toggleTask, setImportance, setViewMode };
+  const bulkSetState = useCallback(
+    (selectedIds: Set<number>, overrides: Map<number, number>) => {
+      setState((prev) => ({
+        ...prev,
+        selectedTaskIds: selectedIds,
+        importanceOverrides: overrides,
+      }));
+    },
+    []
+  );
+
+  return { state, toggleTask, setImportance, setViewMode, bulkSetState };
 }

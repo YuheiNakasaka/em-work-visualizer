@@ -19,6 +19,8 @@ export interface TaskDefinition {
 
 export type ViewMode = "split" | "combined";
 
+export type AppMode = "landing" | "quiz" | "dashboard";
+
 export interface UserState {
   selectedTaskIds: Set<number>;
   importanceOverrides: Map<number, number>;

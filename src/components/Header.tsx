@@ -7,9 +7,10 @@ import type { ViewMode } from "../types";
 interface Props {
   viewMode: ViewMode;
   onViewModeChange: (mode: ViewMode) => void;
+  onStartQuiz?: () => void;
 }
 
-export function Header({ viewMode, onViewModeChange }: Props) {
+export function Header({ viewMode, onViewModeChange, onStartQuiz }: Props) {
   const [helpOpen, setHelpOpen] = useState(false);
 
   return (
@@ -19,6 +20,14 @@ export function Header({ viewMode, onViewModeChange }: Props) {
         <div className="flex items-center gap-3">
           <ViewModeToggle viewMode={viewMode} onChange={onViewModeChange} />
           <ShareButton />
+          {onStartQuiz && (
+            <button
+              onClick={onStartQuiz}
+              className="px-3 py-1.5 text-sm rounded-lg border border-gray-300 bg-white text-gray-600 hover:bg-gray-100 transition-colors"
+            >
+              診断モード
+            </button>
+          )}
           <button
             onClick={() => setHelpOpen(true)}
             className="px-3 py-1.5 text-sm rounded-lg border border-gray-300 bg-white text-gray-600 hover:bg-gray-100 transition-colors"

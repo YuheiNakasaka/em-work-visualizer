@@ -1,21 +1,61 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { useUrlState } from "./hooks/useUrlState";
 import { useChartData } from "./hooks/useChartData";
 import { Header } from "./components/Header";
 import { Layout } from "./components/Layout";
 import { TaskSelector } from "./components/TaskSelector/TaskSelector";
 import { ChartPanel } from "./components/ChartPanel/ChartPanel";
+import { LandingPage } from "./components/LandingPage";
+import { DiagnosticQuiz } from "./components/DiagnosticQuiz/DiagnosticQuiz";
+import type { AppMode } from "./types";
+
+function getInitialMode(): AppMode {
+  const hash = window.location.hash.slice(1);
+  return hash ? "dashboard" : "landing";
+}
 
 function App() {
-  const { state, toggleTask, setImportance, setViewMode } = useUrlState();
+  const { state, toggleTask, setImportance, setViewMode, bulkSetState } =
+    useUrlState();
   const { combinedDatasets, splitDatasets } = useChartData(state);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [appMode, setAppMode] = useState<AppMode>(getInitialMode);
+
+  const handleQuizComplete = useCallback(
+    (selectedIds: Set<number>, overrides: Map<number, number>) => {
+      bulkSetState(selectedIds, overrides);
+      setAppMode("dashboard");
+    },
+    [bulkSetState]
+  );
+
+  if (appMode === "landing") {
+    return (
+      <LandingPage
+        onStartQuiz={() => setAppMode("quiz")}
+        onStartManual={() => setAppMode("dashboard")}
+      />
+    );
+  }
+
+  if (appMode === "quiz") {
+    return (
+      <DiagnosticQuiz
+        onComplete={handleQuizComplete}
+        onSkipToManual={() => setAppMode("dashboard")}
+      />
+    );
+  }
 
   return (
     <>
       <Layout
         header={
-          <Header viewMode={state.viewMode} onViewModeChange={setViewMode} />
+          <Header
+            viewMode={state.viewMode}
+            onViewModeChange={setViewMode}
+            onStartQuiz={() => setAppMode("quiz")}
+          />
         }
         sidebar={
           <TaskSelector
@@ -38,7 +78,7 @@ function App() {
         onClick={() => setDrawerOpen(!drawerOpen)}
         className="md:hidden fixed bottom-4 right-4 w-12 h-12 bg-gray-800 text-white rounded-full shadow-lg flex items-center justify-center z-50"
       >
-        {drawerOpen ? "✕" : "☰"}
+        {drawerOpen ? "\u2715" : "\u2630"}
       </button>
 
       {/* Mobile drawer */}
