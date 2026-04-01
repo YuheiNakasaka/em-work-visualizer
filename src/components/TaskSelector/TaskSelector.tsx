@@ -2,6 +2,7 @@ import { useState, useMemo } from "react";
 import type { Category, UserState } from "../../types";
 import { TASKS } from "../../data/tasks";
 import { CATEGORIES } from "../../data/categories";
+import { taskToDefaultPosition } from "../../lib/bubble-layout";
 import { CategoryTab } from "./CategoryTab";
 import { TaskCheckbox } from "./TaskCheckbox";
 
@@ -9,9 +10,11 @@ interface Props {
   state: UserState;
   onToggleTask: (taskId: number, defaultImportance: number) => void;
   onSetImportance: (taskId: number, importance: number) => void;
+  onSetPosition: (taskId: number, x: number, y: number) => void;
+  onResetPosition: (taskId: number) => void;
 }
 
-export function TaskSelector({ state, onToggleTask, onSetImportance }: Props) {
+export function TaskSelector({ state, onToggleTask, onSetImportance, onSetPosition, onResetPosition }: Props) {
   const [activeCategory, setActiveCategory] = useState<Category>("project");
   const [search, setSearch] = useState("");
 
@@ -98,18 +101,27 @@ export function TaskSelector({ state, onToggleTask, onSetImportance }: Props) {
       </div>
 
       <div className="flex-1 overflow-y-auto px-1">
-        {categoryTasks.map((task) => (
-          <TaskCheckbox
-            key={task.id}
-            task={task}
-            selected={state.selectedTaskIds.has(task.id)}
-            importance={
-              state.importanceOverrides.get(task.id) ?? task.defaultImportance
-            }
-            onToggle={() => onToggleTask(task.id, task.defaultImportance)}
-            onImportanceChange={(v) => onSetImportance(task.id, v)}
-          />
-        ))}
+        {categoryTasks.map((task) => {
+          const defaultPos = taskToDefaultPosition(task);
+          const overridePos = state.positionOverrides.get(task.id);
+          return (
+            <TaskCheckbox
+              key={task.id}
+              task={task}
+              selected={state.selectedTaskIds.has(task.id)}
+              importance={
+                state.importanceOverrides.get(task.id) ?? task.defaultImportance
+              }
+              currentX={overridePos?.x ?? defaultPos.x}
+              currentY={overridePos?.y ?? defaultPos.y}
+              hasPositionOverride={state.positionOverrides.has(task.id)}
+              onToggle={() => onToggleTask(task.id, task.defaultImportance)}
+              onImportanceChange={(v) => onSetImportance(task.id, v)}
+              onPositionChange={(x, y) => onSetPosition(task.id, x, y)}
+              onPositionReset={() => onResetPosition(task.id)}
+            />
+          );
+        })}
       </div>
     </div>
   );

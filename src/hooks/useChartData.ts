@@ -17,7 +17,8 @@ export function useChartData(state: UserState) {
 
     const bubbles = selectedTasks.map((task) => {
       const importance = state.importanceOverrides.get(task.id) ?? task.defaultImportance;
-      return taskToBubble(task, importance);
+      const posOverride = state.positionOverrides.get(task.id);
+      return taskToBubble(task, importance, posOverride);
     });
 
     // Group by category for combined mode

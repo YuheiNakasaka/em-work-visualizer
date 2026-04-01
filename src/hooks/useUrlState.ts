@@ -11,6 +11,7 @@ function getInitialState(): UserState {
   return {
     selectedTaskIds: new Set<number>(),
     importanceOverrides: new Map<number, number>(),
+    positionOverrides: new Map(),
     viewMode: "split",
   };
 }
@@ -45,14 +46,16 @@ export function useUrlState() {
     setState((prev) => {
       const next = new Set(prev.selectedTaskIds);
       const nextOverrides = new Map(prev.importanceOverrides);
+      const nextPositions = new Map(prev.positionOverrides);
       if (next.has(taskId)) {
         next.delete(taskId);
         nextOverrides.delete(taskId);
+        nextPositions.delete(taskId);
       } else {
         next.add(taskId);
         nextOverrides.set(taskId, defaultImportance);
       }
-      return { ...prev, selectedTaskIds: next, importanceOverrides: nextOverrides };
+      return { ...prev, selectedTaskIds: next, importanceOverrides: nextOverrides, positionOverrides: nextPositions };
     });
   }, []);
 
@@ -61,6 +64,22 @@ export function useUrlState() {
       const nextOverrides = new Map(prev.importanceOverrides);
       nextOverrides.set(taskId, importance);
       return { ...prev, importanceOverrides: nextOverrides };
+    });
+  }, []);
+
+  const setPosition = useCallback((taskId: number, x: number, y: number) => {
+    setState((prev) => {
+      const nextPositions = new Map(prev.positionOverrides);
+      nextPositions.set(taskId, { x, y });
+      return { ...prev, positionOverrides: nextPositions };
+    });
+  }, []);
+
+  const resetPosition = useCallback((taskId: number) => {
+    setState((prev) => {
+      const nextPositions = new Map(prev.positionOverrides);
+      nextPositions.delete(taskId);
+      return { ...prev, positionOverrides: nextPositions };
     });
   }, []);
 
@@ -74,10 +93,11 @@ export function useUrlState() {
         ...prev,
         selectedTaskIds: selectedIds,
         importanceOverrides: overrides,
+        positionOverrides: new Map(),
       }));
     },
     []
   );
 
-  return { state, toggleTask, setImportance, setViewMode, bulkSetState };
+  return { state, toggleTask, setImportance, setPosition, resetPosition, setViewMode, bulkSetState };
 }

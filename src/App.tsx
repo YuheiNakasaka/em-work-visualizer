@@ -15,7 +15,7 @@ function getInitialMode(): AppMode {
 }
 
 function App() {
-  const { state, toggleTask, setImportance, setViewMode, bulkSetState } =
+  const { state, toggleTask, setImportance, setPosition, resetPosition, setViewMode, bulkSetState } =
     useUrlState();
   const { combinedDatasets, splitDatasets } = useChartData(state);
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -62,6 +62,8 @@ function App() {
             state={state}
             onToggleTask={toggleTask}
             onSetImportance={setImportance}
+            onSetPosition={setPosition}
+            onResetPosition={resetPosition}
           />
         }
         main={
@@ -93,6 +95,8 @@ function App() {
               state={state}
               onToggleTask={toggleTask}
               onSetImportance={setImportance}
+              onSetPosition={setPosition}
+              onResetPosition={resetPosition}
             />
           </aside>
         </div>

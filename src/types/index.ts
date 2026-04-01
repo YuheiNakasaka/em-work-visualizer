@@ -17,6 +17,11 @@ export interface TaskDefinition {
   description: string;
 }
 
+export interface PositionOverride {
+  x: number; // 0 = short-term, 100 = long-term
+  y: number; // 0 = individual, 100 = organization
+}
+
 export type ViewMode = "split" | "combined";
 
 export type AppMode = "landing" | "quiz" | "dashboard";
@@ -24,5 +29,6 @@ export type AppMode = "landing" | "quiz" | "dashboard";
 export interface UserState {
   selectedTaskIds: Set<number>;
   importanceOverrides: Map<number, number>;
+  positionOverrides: Map<number, PositionOverride>;
   viewMode: ViewMode;
 }
